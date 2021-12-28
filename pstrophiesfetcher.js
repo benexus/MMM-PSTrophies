@@ -81,8 +81,8 @@ const PSTrophiesFetcher = function (config, path) {
 			fs.writeFileSync(path + "/token.json", JSON.stringify(token));
 			return token;
 		} else {
-			Log.error("Refresh Token Response " + response.status);
-			Log.error("Refresh Token Response " + response.statusText);
+			Log.error("Authenticate Response " + response.status);
+			Log.error("Authenticate Response " + response.statusText);
 		}
 		return null;
 	}
@@ -133,8 +133,8 @@ const PSTrophiesFetcher = function (config, path) {
 			profile.accountId = ids.profile.accountId;
 		} else {
 			// fixme 401??
-			Log.error("GET My Profile " + response.status);
-			Log.error("GET My Profile " + response.statusText);
+			Log.error("My Profile Response " + response.status);
+			Log.error("My Profile Response " + response.statusText);
 		}
 		return profile;
 	}
@@ -142,7 +142,6 @@ const PSTrophiesFetcher = function (config, path) {
 	const getFriends = () => {
 		getFriendsList()
 			.then((friendsList) => {
-				Log.error("FRIENDS " + friendsList.length);
 				getProfiles(friendsList)
 					.then((friends) => {
 						profiles.length = 0;
@@ -187,8 +186,8 @@ const PSTrophiesFetcher = function (config, path) {
 					}
 				} else {
 					// fixme 401??
-					Log.error("GET FRIENDS " + response.status);
-					Log.error("GET FRIENDS " + response.statusText);
+					Log.error("Friends Response " + response.status);
+					Log.error("Friends Response " + response.statusText);
 					loop = false;
 				}
 			} else {
@@ -248,8 +247,8 @@ const PSTrophiesFetcher = function (config, path) {
 				}
 			} else {
 				// fixme 401??
-				Log.error("GET PROFILES " + response.status);
-				Log.error("GET PROFILES " + response.statusText);
+				Log.error("Profiles Response " + response.status);
+				Log.error("Profiles Response " + response.statusText);
 				loop = false;
 			}
 		}
@@ -282,8 +281,8 @@ const PSTrophiesFetcher = function (config, path) {
 				});
 			} else {
 				// fixme 401??
-				Log.error("GET Presences " + response.status);
-				Log.error("GET Presences " + response.statusText);
+				Log.error("Presences Response " + response.status);
+				Log.error("Presences Response " + response.statusText);
 				loop = false;
 			}
 		}
@@ -333,6 +332,7 @@ const PSTrophiesFetcher = function (config, path) {
 			Log.error("Token expired at " + new Date(token.expiresAt));
 			if (token.refreshExpiresAt < Date.now()) {
 				Log.error("Refresh Token expired at " + new Date(token.refreshExpiresAt));
+				// fixme
 			} else {
 				await refreshAccessToken();
 			}

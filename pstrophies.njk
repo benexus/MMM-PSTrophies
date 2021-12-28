@@ -5,13 +5,7 @@
         <table style="max-width: 300px;">
             {% for profile in profiles %}
                 <tr class="bright">
-                        <td rowspan="2"><img style="margin-top:10px; border-radius: 50%;" src="
-                    {% if profile.hasPersonalImage %}
-                        {{profile.personalImage}}
-                    {% else %}
-                        {{profile.avatar}}
-                    {% endif %}
-                        " width="64" height="64"></td>
+                    <td rowspan="2" style="width:64px"><img style="margin-top:10px; border-radius: 50%;" src="{% if profile.hasPersonalImage %}{{profile.personalImage}}{% else %}{{profile.avatar}}{% endif %}" width="64" height="64"></td>
                     {% if profile.hasName %}
                         <td>
                             {{ profile.name }}
@@ -36,6 +30,15 @@
                     <td colspan="2" style="border-bottom: 1px solid var(--color-text-dimmed);"></td>
                 </tr>
             {% endfor %}
+            {% if pages.length > 0 %}
+                <tr>
+                    <td colspan="2" style="text-align: center">
+                        {% for page in pages %}
+                            <i class="fas fa-circle {% if page %}bright{% else %}dimmed{% endif %}" style="font-size: 0.25rem;margin-left:5px;margin-right:5px"/>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
         </table>
     {% endif %}
 {% elseif missingToken %}

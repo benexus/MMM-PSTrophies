@@ -4,9 +4,13 @@ Module.register("MMM-PSTrophies", {
 		code: null,
 		reloadInterval: 5 * 60 * 1000,
 		pageUpdateInterval: 10 * 1000,
+		pageSize: 5,
 		animationSpeed: 1000
 	},
 
+	page: 1,
+	start: 0,
+	pages: [],
 	profile: null,
 
 	getScripts: function () {
@@ -63,13 +67,15 @@ Module.register("MMM-PSTrophies", {
 			this.profile = payload;
 		} else if (notification === "FRIENDS_AVAILABLE") {
 			this.generateList(payload);
+			this.page = 1;
 			this.loaded = true;
+			this.timer = null;
 		} else if (notification === "PROFILE_READY") {
 			this.profile = payload
 		} else if (notification === "PS_ERROR") {
 			this.error = this.translate(payload.error_type);
 		}
-		this.schedulePageUpdateInterval();
+		this.updateDom(this.config.animationSpeed);
 	},
 
 	getTemplate: function () {
@@ -77,6 +83,25 @@ Module.register("MMM-PSTrophies", {
 	},
 
 	getTemplateData: function () {
+		this.empty = this.profiles.length == 0;
+		this.start = this.page * this.config.pageSize;
+		let totalPages = Math.ceil(this.profiles.length / this.config.pageSize);
+		this.pages.length = 0;
+		if (this.profiles.length > 0) {
+			this.page++;
+		}
+		if (this.start >= this.profiles.length) {
+			this.page = 1;
+			this.start = 0;
+		}
+		if (totalPages > 1) {
+			for (let i = 1; i < totalPages + 1; i++) {
+				this.pages.push(i == this.page)
+			}
+			if (!this.timer) {
+				this.schedulePageUpdateInterval();
+			}
+		}
 		return {
 			loaded: this.loaded,
 			error: this.error,
@@ -84,7 +109,8 @@ Module.register("MMM-PSTrophies", {
 			empty: this.empty,
 			config: this.config,
 			authError: this.authError,
-			profiles: this.profiles
+			profiles: this.profiles.slice(this.start, this.start + this.config.pageSize),
+			pages: this.pages
 		};
 	},
 
@@ -95,16 +121,12 @@ Module.register("MMM-PSTrophies", {
 				this.profiles.push(friend);
 			}
 		});
-		this.empty = this.profiles.length == 0;
 	},
 
 	schedulePageUpdateInterval: function () {
-		this.updateDom(this.config.animationSpeed);
-
-		// this.timer = setInterval(() => {
-		// 	this.updateDom(this.config.animationSpeed);
-
-		// }, this.config.pageUpdateInterval);
+		this.timer = setInterval(() => {
+			this.updateDom(this.config.animationSpeed);
+		}, this.config.pageUpdateInterval);
 	},
 
 });

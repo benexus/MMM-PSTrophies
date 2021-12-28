@@ -20,12 +20,10 @@ module.exports = NodeHelper.create({
 			this.fetcher = new PSTrophiesFetcher(config, this.path);
 
 			this.fetcher.onFriendsReady((friends) => {
-				Log.info("Friends Ready");
 				this.sendSocketNotification("FRIENDS_AVAILABLE", friends);
 			});
 
 			this.fetcher.onProfileReady((profile) => {
-				Log.info("Profile Ready");
 				this.sendSocketNotification("PROFILE_AVAILABLE", profile);
 			});
 
@@ -44,8 +42,6 @@ module.exports = NodeHelper.create({
 					error_type
 				});
 			});
-		} else {
-			Log.log("Use existing fetcher");
 		}
 
 		this.fetcher.startFetch();
