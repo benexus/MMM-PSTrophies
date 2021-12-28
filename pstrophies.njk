@@ -1,0 +1,57 @@
+{% if loaded %}
+    {% if empty %}
+        <div class="small dimmed">There are no friends online.</div>
+    {% else %}
+        <table style="max-width: 300px;">
+            {% for profile in profiles %}
+                <tr class="bright">
+                        <td rowspan="2"><img style="margin-top:10px; border-radius: 50%;" src="
+                    {% if profile.hasPersonalImage %}
+                        {{profile.personalImage}}
+                    {% else %}
+                        {{profile.avatar}}
+                    {% endif %}
+                        " width="64" height="64"></td>
+                    {% if profile.hasName %}
+                        <td>
+                            {{ profile.name }}
+                            <br>
+                            <div class="xsmall dimmed">{{ profile.onlineId }}</div>
+                        </td>
+                    {% else %}
+                        <td>{{ profile.onlineId }}</td>
+                    {% endif %}
+                </tr>
+                {% if profile.presence.hasGame %}
+                    <tr>
+                        <td class="xsmall dimmed">{{ profile.presence.game }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="xsmall dimmed">{{ profile.presence.gameStatus }}</td>
+                    </tr>
+                {% else %}
+                    <tr></tr>
+                {% endif %}
+                <tr>
+                    <td colspan="2" style="border-bottom: 1px solid var(--color-text-dimmed);"></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% elseif missingToken %}
+    <div class="small dimmed">
+        Missing Token: Please read README.md
+    </div>
+{% elseif authError %}
+    <div class="small dimmed">
+        Authentication Error: Please read README.md
+    </div>
+{% elseif error %}
+    <div class="small dimmed">
+        {{ "MODULE_CONFIG_ERROR" | translate({MODULE_NAME: "PSTrophies", ERROR: error}) | safe }}
+    </div>
+{% else %}
+    <div class="small dimmed">
+        {{ "LOADING" | translate | safe }}
+    </div>
+{% endif %}
